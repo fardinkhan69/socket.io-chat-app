@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ScrollToBottom from "react-scroll-to-bottom";
 
 const Chat = ({ socket, userName, room }) => {
   const [currentMessage, setCurrentMessage] = useState("");
@@ -36,29 +37,37 @@ const Chat = ({ socket, userName, room }) => {
       </div>
       <div className="chat-body">
         {
-          messageList.map(messageContent => {
+          <ScrollToBottom className="message-container">
+          {messageList.map((messageContent) => {
             return (
-              <div className="message">
-                <div id={userName === messageContent.author ? "you" : "other"}>
-                  <div>
-                    <div className="message-content">
-                      <p>{messageContent.message}</p>
-                    </div>
-                    <div className="message-meta">
-                        <p id="time">{messageContent.time}</p>
-                        <p id="author"> {messageContent.author} </p>
-                    </div>
+              <div
+                className="message"
+                id={userName === messageContent.author ? "you" : "other"}
+              >
+                <div>
+                  <div className="message-content">
+                    <p>{messageContent.message}</p>
+                  </div>
+                  <div className="message-meta">
+                    <p id="time">{messageContent.time}</p>
+                    <p id="author">{messageContent.author}</p>
                   </div>
                 </div>
               </div>
-            )
-          })
+            );
+          })}
+        </ScrollToBottom>
         }
       </div>
       <div className="chat-footer">
-        <input type="text" placeholder="your message" onChange={(event) => {
+        <input type="text" placeholder="your message" value={currentMessage} onChange={(event) => {
           setCurrentMessage(event.target.value);
-        }} />
+        }}
+        onKeyPress={(event) => {
+          event.key === "Enter" && sendMessage();
+        }}
+        
+        />
         <button onClick={sendMessage}>&#9658;</button>
       </div>
     </div>
